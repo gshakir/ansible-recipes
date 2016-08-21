@@ -1,0 +1,31 @@
+---
+- name: Launch instance
+  ec2:
+    key_name: "{{ aws_keypair }}"
+    instance_type: t2.micro
+    image: ami-60b6c60a
+    wait: yes
+    region: "{{ aws_region }}"
+    group_id: "{{ aws_group }}"
+    vpc_subnet_id: "{{ aws_subnet }}"
+    instance_tags:
+      gsh_source: ansible
+      gsh_type: elasticsearch
+    instance_profile_name: "{{ aws_instance_profile_name }}"
+
+    # Since security group will block from outside work/home source
+    # Make it 'no' when the orchestration moves inside AWS
+    #
+    assign_public_ip: yes 
+
+    count: "{{aws_count }}"
+  register: myec2
+
+- name: Add new instances to host group
+  add_host: hostname={{ item.public_ip }} groupname={{ host_group }}
+  with_items: myec2.instances
+
+- name: Wait for the instances to boot by checking the ssh port
+  wait_for: host={{item.public_dns_name}} port=22 delay=60 timeout=320 state=started
+  with_items: myec2.instances
+

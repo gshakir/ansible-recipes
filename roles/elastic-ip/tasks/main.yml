@@ -1,0 +1,10 @@
+---
+- name: get ec2 facts
+  ec2_facts:
+
+- name: debug
+  debug: var=ansible_ec2_instance_id 
+
+- name: associate an elastic IP with an instance
+  ec2_eip: device_id={{ ansible_ec2_instance_id }} ip={{ aws_elastic_ip }} region={{ aws_region }} state=present
+  delegate_to: localhost

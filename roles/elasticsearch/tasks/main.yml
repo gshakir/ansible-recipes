@@ -1,0 +1,26 @@
+---
+- name: Install JDK 8
+  yum: name=java-1.8.0-openjdk-headless.x86_64 state=latest
+
+- name: Configure java to java8
+  alternatives: name=java path=/usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java
+
+- name: Download ES and install
+  yum: name=https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/rpm/elasticsearch/2.2.0/elasticsearch-2.2.0.rpm state=present
+  notify: restart elasticsearch
+
+- name: Install head plugin
+  elasticsearch_plugin: state=present name="mobz/elasticsearch-head"
+  notify: restart elasticsearch
+
+- name: Install cloud-aws plugin
+  elasticsearch_plugin: state=present name="cloud-aws"
+  notify: restart elasticsearch
+
+- name: Copy over Elasticsearch settings
+  copy: src=elasticsearch.yml dest=/etc/elasticsearch/elasticsearch.yml
+  notify: restart elasticsearch
+
+- name: Ensure the service is running
+  service: name=elasticsearch state=started
+

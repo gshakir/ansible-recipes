@@ -1,0 +1,17 @@
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  roles:
+    - es-role
+    - { role: ec2-instance, host_group: 'es-client' }
+    - { role: ec2-instance, host_group: 'es-nodes', aws_count: 2 }
+
+- hosts: es-client:es-nodes
+  become: yes
+  become_method: sudo
+  roles:
+    - elasticsearch
+
+- hosts: es-client
+  roles:
+    - { role: elastic-ip, aws_elastic_ip: '52.72.241.99' }

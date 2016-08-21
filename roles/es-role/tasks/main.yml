@@ -1,0 +1,17 @@
+---
+- name: Ensure role exists
+  iam:
+    iam_type: role
+    name: es-role
+    state: present
+
+- name: Ensure policy exists
+  iam_policy:
+    iam_type: role
+    iam_name: es-role
+    policy_name: ElasticsearchRole
+    state: present
+    #policy_document: "{{ role_path }}/files/elasticsearch-backup-policy.json"
+    #policy_json: "{{ lookup( 'template', 'es-role-policy.json.j2', convert_data=False) }} "
+    # works policy_json: "{{ lookup( 'template', 'es-role-policy.json.j2') }}"
+    policy_json: "{{ lookup( 'template', 'es-role-policy.json.j2', convert_data=False) }}"
