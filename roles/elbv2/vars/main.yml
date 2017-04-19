@@ -1,0 +1,10 @@
+---
+region: us-east-1
+
+vpc_name:  SidecastrStaging
+
+public_subnets_tags:
+  - Public us-east-1a
+  - Public us-east-1b
+  - Public us-east-1d
+
