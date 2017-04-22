@@ -1,0 +1,33 @@
+
+- name: Create a load balancer
+  shell: >
+    aws elbv2 create-load-balancer --name my-load-balancer --subnets {{ subnet_ids}}
+  register: elb_create
+              
+- name: Load balancer id
+  set_fact:
+    my_elb_stdout: "{{ (elb_create.stdout| from_json)}}"
+
+- name: Load balancer id
+  set_fact:
+    elb_arn: "{{ (elb_create.stdout| from_json).LoadBalancers.0.LoadBalancerArn }}"
+
+- name: Create a listener
+  shell: >
+    aws elbv2 create-listener --load-balancer-arn {{ elb_arn }} --protocol HTTP --port 80 --default-actions Type=forward,TargetGroupArn={{ elb_target_group_arn}}
+  register: elb_listener
+
+- name: Get listener arn
+  set_fact:
+    elb_listener_arn: "{{ (elb_listener.stdout| from_json).Listeners.0.ListenerArn }}"
+
+- name: Create additional rule
+  shell: >
+    aws elbv2 create-rule --listener-arn {{ elb_listener_arn}} --priority {{ item.0.priority }} --conditions Field=host-header,Values='{{ item.0.host}}' --actions Type=forward,TargetGroupArn={{ (item.1 | from_json).TargetGroups.0.TargetGroupArn }}
+  with_together: 
+    - "{{ elb_rules }}"
+    - "{{ additional_target_groups_arn }}"
+  register: elb_listener_rule
+
+
+

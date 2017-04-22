@@ -1,0 +1,27 @@
+
+- name: Create a auto scaling configuration
+  ec2_lc:
+    name: my_new_lc
+    image_id: ami-XXX
+    key_name: default
+    security_groups: ['group', 'group2' ]
+    instance_type: t1.micro
+    state: present
+  register: launch_config
+
+
+- name: Create auto scaling group
+  ec2_asg:
+    name: myasg
+    launch_config_name: my_new_lc
+    health_check_period: 60
+    health_check_type: ELB
+    min_size: 1
+    max_size: 1
+    desired_capacity: 1
+    region: us-east-1
+
+- name: Attach target groups to  a load balancer
+  shell: >
+    aws autoscaling attach-load-balancer-target-groups --auto-scaling-group-name myasg --target-group-arns {{ elb_target_group_arn }}
+  register: elb_create

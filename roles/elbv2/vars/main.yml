@@ -1,10 +1,22 @@
 ---
-region: us-east-1
 
-vpc_name:  SidecastrStaging
 
 public_subnets_tags:
   - Public us-east-1a
   - Public us-east-1b
   - Public us-east-1d
+
+elb_name: my-load-balancer 
+
+default_target_group_name: my-target-group
+
+elb_rules:
+  - target_group: target-group1  
+    host: myhost1.gulamshakir.com
+    priority: 10
+  - target_group: target-group2  
+    host: myhost2.gulamshakir.com
+    priority: 9
+
+
 

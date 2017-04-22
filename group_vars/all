@@ -3,12 +3,17 @@
 #
 aws_region: "us-east-1"
 aws_keypair: "<keypair name>"
+
+# If VPC already known
+#
+aws_vpc_name: "MyStaging"
 aws_vpc: "vpc-3b9fe65f"
 aws_subnet: "subnet-e88b1bd5"
 aws_group: "sg-05a5e07c"
 aws_instance_profile_name: "es-role"
 
 # elastic search back up bucketname
+#
 es_backup_s3_bucket_name: 
 
 

@@ -1,27 +1,5 @@
 ---
 
-- name: Get my vpc
-  ec2_vpc_net_facts:
-    region: "{{ region }}"
-    filters:
-      "tag:Name": "{{ vpc_name }}"
-  register: my_vpc
-
-- name: Get subnets for my vpc
-  ec2_vpc_subnet_facts:
-    region: "{{ region }}"
-    filters:
-      vpc-id: "{{ my_vpc.vpcs[0].id }}"
-      "tag:Name": "{{ item }}"
-  with_items: "{{ public_subnets_tags }}"
-  register: my_subnets
-
-- name: Debug subnet results
-  debug: var=my_subnets
-
-- name: Set subnet ids
-  set_fact:
-    subnet_ids: "{{ my_subnets.results|map(attribute='subnets.0.id')|list }}"
-
-- name: Debug subnet id results
-  debug: var=subnet_ids
+- include: vpc-facts.yml tags=vpc-facts
+- include: create-target-groups.yml tags=create-target-groups
+- include: create-elb.yml tags=create-elb
