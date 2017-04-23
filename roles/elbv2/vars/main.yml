@@ -1,10 +1,14 @@
 ---
 
-
 public_subnets_tags:
   - Public us-east-1a
   - Public us-east-1b
   - Public us-east-1d
+
+private_subnets_tags:
+  - Private us-east-1a
+  - Private us-east-1b
+  - Private us-east-1d
 
 elb_name: my-load-balancer 
 
@@ -17,6 +21,25 @@ elb_rules:
   - target_group: target-group2  
     host: myhost2.gulamshakir.com
     priority: 9
+
+launch_configs:
+  - name: lc1
+    user_data_file: file1
+  - name: lc2
+    user_data_file: file2
+  - name: lc3
+    user_data_file: file3
+
+auto_scaling_groups:
+  - name: asg1
+    launch_config_name: lc1
+    target_group: my-target-group
+  - name: asg2
+    launch_config_name: lc2
+    target_group: target-group1
+  - name: asg3
+    launch_config_name: lc3
+    target_group: target-group2
 
 
 

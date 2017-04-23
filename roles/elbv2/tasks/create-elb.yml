@@ -1,7 +1,7 @@
 
 - name: Create a load balancer
   shell: >
-    aws elbv2 create-load-balancer --name my-load-balancer --subnets {{ subnet_ids}}
+    aws elbv2 create-load-balancer --name my-load-balancer --subnets {{ my_public_subnet_ids}}
   register: elb_create
               
 - name: Load balancer id
