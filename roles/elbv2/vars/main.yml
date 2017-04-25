@@ -33,7 +33,7 @@ launch_configs:
 auto_scaling_groups:
   - name: asg1
     launch_config_name: lc1
-    target_group: my-target-group
+    target_group: my-targets
   - name: asg2
     launch_config_name: lc2
     target_group: target-group1

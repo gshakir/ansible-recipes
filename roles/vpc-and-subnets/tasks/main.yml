@@ -2,7 +2,7 @@
 
 - name: Create or ensure a VPC
   ec2_vpc_net:
-    name: SidecastrStaging
+    name: MyStaging
     cidr_block: "{{ cidr }}"
     region: "{{ region }}"
     tags:
@@ -27,6 +27,11 @@
       Name:  "{{ 'Public ' ~ item.value.zone }}"
   with_dict: "{{ subnets }}"
   register: public_subnet_ids
+
+- name: Auto assign public IP
+  command: >
+    aws ec2 modify-subnet-attribute --subnet-id {{ item.subnet.id }} --map-public-ip-on-launch
+  with_items: "{{ public_subnet_ids.results }}"
 
 - name: Set up public subnet route table
   ec2_vpc_route_table:

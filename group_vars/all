@@ -9,7 +9,7 @@ aws_keypair: "<keypair name>"
 aws_vpc_name: "MyStaging"
 aws_vpc: "vpc-3b9fe65f"
 aws_subnet: "subnet-e88b1bd5"
-aws_group: "sg-05a5e07c"
+aws_group: "sg-cf414db0"
 aws_instance_profile_name: "es-role"
 
 # elastic search back up bucketname

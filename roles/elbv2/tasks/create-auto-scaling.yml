@@ -6,6 +6,9 @@
     instance_type: t2.micro
     state: present
     region: "{{ aws_region }}"
+    security_groups: [ "{{ aws_group }}" ]
+    key_name: gshakir-staging
+    user_data:  "{{ lookup( 'template', 'user-data.sh', convert_data=False) }}"
   register: launch_config
   with_items: "{{ launch_configs }}"
 
@@ -15,24 +18,32 @@
     launch_config_name: "{{ item.launch_config_name }}"
     health_check_period: 60
     health_check_type: ELB
-    min_size: 0
-    max_size: 0
-    desired_capacity: 0
+    min_size: 1
+    max_size: 1
+    desired_capacity: 1
     region: "{{ aws_region }}"
-    vpc_zone_identifier: "{{ my_private_subnet_ids }}"
+    vpc_zone_identifier: "{{ my_public_subnet_ids }}"
   with_items: "{{ auto_scaling_groups }}"
 
 - name: Get target group arns
-  shell: >
+  command: >
     aws elbv2 describe-target-groups --name {{ item.target_group }}
   with_items: "{{ auto_scaling_groups }}"
-  register: asg_target_group_arns
+  register: asg_target_groups
 
-- name: Debug target group arns  results
-  debug: var=asg_target_group_arns
+#- name: Debug target group arns  results
+#debug: var=asg_target_groups
+
+- name: Asg target group arns
+  set_fact:
+    asg_target_groups_arn: "{{ (asg_target_groups.results |map(attribute='stdout') | list) }}"
 
 - name: Attach target groups to  a load balancer
-  shell: >
-    aws autoscaling attach-load-balancer-target-groups --auto-scaling-group-name myasg --target-group-arns {{ elb_target_group_arn }}
-  register: elb_create
-  with_items: "{{ auto_scaling_groups }}"
+  command: >
+    aws autoscaling attach-load-balancer-target-groups 
+      --auto-scaling-group-name {{ item.0.name }} 
+      --target-group-arns {{ (item.1 | from_json).TargetGroups.0.TargetGroupArn }}
+  with_together: 
+    - "{{ auto_scaling_groups }}"
+    - "{{ asg_target_groups_arn }}"
+

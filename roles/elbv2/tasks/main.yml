@@ -3,3 +3,4 @@
 - include: vpc-facts.yml tags=vpc-facts
 - include: create-target-groups.yml tags=create-target-groups
 - include: create-auto-scaling.yml tags=create-auto-scaling
+- include: create-elb.yml tags=create-elb
