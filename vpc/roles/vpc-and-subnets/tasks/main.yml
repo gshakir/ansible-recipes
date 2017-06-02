@@ -1,94 +1,11 @@
 ---
 
-- name: Create or ensure a VPC
-  ec2_vpc_net:
-    name: MyStaging
-    cidr_block: "{{ cidr }}"
-    region: "{{ region }}"
-    tags:
-      module: staging
-  register: my_vpc
+- include: create-vpc.yml tags=create-vpc
 
-- name: Ensure internet gateway
-  ec2_vpc_igw:
-    region: "{{ region }}"
-    vpc_id: "{{ my_vpc.vpc.id }}"
-    state: present
-  register: igw
+- include: create-public-subnets.yml tags=create-public-subnets
 
-- name: Create subnet for public servers
-  ec2_vpc_subnet:
-    state: present
-    region: "{{ region }}"
-    vpc_id: "{{ my_vpc.vpc.id }}"
-    az: "{{ item.value.zone }}"
-    cidr: "{{ item.value.public_cidr}}"
-    tags:
-      Name:  "{{ 'Public ' ~ item.value.zone }}"
-  with_dict: "{{ subnets }}"
-  register: public_subnet_ids
+- include: create-private-subnets.yml tags=create-private-subnets
 
-- name: Auto assign public IP
-  command: >
-    aws ec2 modify-subnet-attribute --subnet-id {{ item.subnet.id }} --map-public-ip-on-launch
-  with_items: "{{ public_subnet_ids.results }}"
-
-- name: Set up public subnet route table
-  ec2_vpc_route_table:
-    vpc_id: "{{ my_vpc.vpc.id }}"
-    region: "{{ region }}"
-    tags:
-      Name: "{{ 'Public Routing ' ~ item.subnet.id }}"
-    subnets:
-      - "{{ item.subnet.id }}"
-    routes:
-      - dest: 0.0.0.0/0
-        gateway_id: "{{ igw.gateway_id }}"
-  with_items: "{{ public_subnet_ids.results }}"
-  register: public_route_table
-
-- name: Create subnet for private servers
-  ec2_vpc_subnet:
-    state: present
-    region: "{{ region }}"
-    vpc_id: "{{ my_vpc.vpc.id }}"
-    az: "{{ item.value.zone }}"
-    cidr: "{{ item.value.private_cidr}}"
-    tags:
-      Name:  "{{ 'Private ' ~ item.value.zone }}"
-  with_dict: "{{ subnets }}"
-  register: private_subnet_ids
-
-# Create NAT gateway for every zone
-# Using *PUBLIC* subnet ID
-#
-- name: Create new nat gateway and allocate new EIP if a nat gateway does not yet exist in the subnet.
-  ec2_vpc_nat_gateway:
-    state: present
-    subnet_id:  "{{ item.subnet.id }}"
-    wait: yes
-    region: "{{ region }}"
-    if_exist_do_not_create: true
-  register: new_nat_gateway
-  with_items: "{{ public_subnet_ids.results }}"
-
-- name: Debug NAT Gateway
-  debug: var=new_nat_gateway
-
-- name: Set up private subnet route table
-  ec2_vpc_route_table:
-    vpc_id: "{{ my_vpc.vpc.id }}"
-    region: "{{ region }}"
-    tags:
-      Name: "{{ 'Private Routing ' ~ item[0].subnet.id }}"
-    subnets:
-      - "{{ item[0].subnet.id }}"
-    routes:
-      - dest: 0.0.0.0/0
-        gateway_id: "{{ item[1].nat_gateway_id }}"
-  with_nested: 
-    - "{{ private_subnet_ids.results }}" 
-    - "{{ new_nat_gateway.results }}" 
-  register: private_route_table
-
-
+- include: create-nat-gateways.yml tags=create-nat-gateways
+  when: create_nat_gateway
+           

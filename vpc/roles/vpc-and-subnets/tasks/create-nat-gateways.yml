@@ -1,0 +1,39 @@
+---
+
+# Create NAT gateway for every zone
+# Using *PUBLIC* subnet ID
+#
+
+- name: Debug Boolean  Variable
+  debug: var=create_nat_gateway
+
+- name: Create new nat gateway and allocate new EIP if a nat gateway does not yet exist in the subnet.
+  ec2_vpc_nat_gateway:
+    state: present
+    subnet_id:  "{{ item.subnet.id }}"
+    wait: yes
+    region: "{{ region }}"
+    if_exist_do_not_create: true
+  register: new_nat_gateway
+  with_items: "{{ public_subnet_ids.results }}"
+
+- name: Debug NAT Gateway
+  debug: var=new_nat_gateway
+
+- name: Set up private subnet route table
+  ec2_vpc_route_table:
+    vpc_id: "{{ my_vpc.vpc.id }}"
+    region: "{{ region }}"
+    tags:
+      Name: "{{ 'Private Routing ' ~ item[0].subnet.id }}"
+    subnets:
+      - "{{ item[0].subnet.id }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ item[1].nat_gateway_id }}"
+  with_nested: 
+    - "{{ private_subnet_ids.results }}" 
+    - "{{ new_nat_gateway.results }}" 
+  register: private_route_table
+
+

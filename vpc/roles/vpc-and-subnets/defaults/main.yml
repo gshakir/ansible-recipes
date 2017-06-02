@@ -1,0 +1,22 @@
+---
+region: us-east-1
+
+vpc_name: DefaultVpcName
+
+cidr:  192.168.0.0/16
+
+subnets:
+  az1:
+    zone: us-east-1a
+    public_cidr: 192.168.0.0/24
+    private_cidr: 192.168.1.0/24
+  az2:
+    zone: us-east-1b
+    public_cidr: 192.168.2.0/24
+    private_cidr: 192.168.3.0/24
+  az3:
+    zone: us-east-1d
+    public_cidr: 192.168.4.0/24
+    private_cidr: 192.168.5.0/24
+
+create_nat_gateway: false

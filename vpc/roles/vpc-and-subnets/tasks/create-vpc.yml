@@ -1,0 +1,17 @@
+---
+
+- name: Create or ensure a VPC
+  ec2_vpc_net:
+    name: "{{ vpc_name }}"
+    cidr_block: "{{ cidr }}"
+    region: "{{ region }}"
+    tags:
+      module: staging
+  register: my_vpc
+
+- name: Ensure internet gateway
+  ec2_vpc_igw:
+    region: "{{ region }}"
+    vpc_id: "{{ my_vpc.vpc.id }}"
+    state: present
+  register: igw
