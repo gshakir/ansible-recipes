@@ -5,6 +5,11 @@ vpc_name: DefaultVpcName
 
 cidr:  192.168.0.0/16
 
+# Creating NAT gateway costs money
+# If true, will create NAT Gateway in each public subnet
+#
+create_nat_gateway: false
+
 subnets:
   az1:
     zone: us-east-1a
@@ -19,4 +24,3 @@ subnets:
     public_cidr: 192.168.4.0/24
     private_cidr: 192.168.5.0/24
 
-create_nat_gateway: false
