@@ -1,0 +1,29 @@
+---
+
+- name: get my public IP
+  ipify_facts:
+
+- name: A public security group
+  ec2_group:
+    name: Public security group
+    description: Public security group 
+    region: "{{ aws_region }}"
+    vpc_id: "{{ my_vpc.vpcs[0].id }}"
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: "{{ ipify_public_ip }}/32"
+      - proto: tcp
+        from_port: 5432
+        to_port: 5432
+        cidr_ip: "{{ ipify_public_ip }}/32"
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: "{{ ipify_public_ip }}/32"
+  register: vpc_security_groups
+
+
+- name: Debug private subnet results
+  debug: var=group

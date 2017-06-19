@@ -15,9 +15,10 @@
     db_name: "{{ db_name }}"
     wait: yes
     wait_timeout: 600
+    vpc_security_groups: "{{ vpc_security_groups.group_id }}"
     tags:
-      Environment: testing
-      Application: cms
+      Environment: dev
+      Application: demo
   register: rds
 
 - debug:
