@@ -4,9 +4,9 @@
   roles:
     - vpc-facts
 
+    - { role: db-subnet-group, my_subnet_ids: "{{ my_public_subnet_ids}}" , db_subnet_group_name: "{{ db_public_subnet_group_name}} " }
+
     - public-security-group
 
-      # - { role: db-subnet-group, my_subnet_ids: "{{ my_public_subnet_ids}}" , db_subnet_group_name: "{{ db_public_subnet_group_name}} " }
-
-          # - { role: rds, db_public: true, db_subnet_group_name: "{{ db_public_subnet_group_name}} " }
+    - { role: rds, db_public: true, db_subnet_group_name: "{{ db_public_subnet_group_name}} " }
 
