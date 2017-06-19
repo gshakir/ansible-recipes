@@ -1,0 +1,10 @@
+---
+
+- name: Create a database subnet group
+  rds_subnet_group:
+    state: present
+    name: "{{ db_subnet_group_name }}"
+    description: My Subnet Group
+    subnets: "{{ my_subnet_ids }}"
+    region: "{{ aws_region }}"
+

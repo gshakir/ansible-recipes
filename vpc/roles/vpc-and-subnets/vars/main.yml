@@ -2,10 +2,5 @@
 
 # Override any default variables
 #
-vpc_name: NonDefaultVpcName
+vpc_name: AuroraTest
 
-subnets:
-  az1:
-    zone: us-east-1a
-    public_cidr: 192.168.0.0/24
-    private_cidr: 192.168.1.0/24

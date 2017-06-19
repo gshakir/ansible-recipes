@@ -1,0 +1,32 @@
+---
+
+db_private_subnet_group_name: "private-db-subnet-1"
+db_public_subnet_group_name: "public-db-subnet-1"
+
+db_instance_name: "db-instance-1"
+db_instance_type: "db.t2.medium"
+db_cluster_name: "db-cluster-1"
+db_name: "dbname"
+
+db_master_username: "dbadmin"
+db_master_password: "dbadminpassword"
+
+
+# Region
+#
+aws_region: "us-east-1"
+
+# Vpc
+#
+aws_vpc_name: "AuroraTest"
+
+public_subnets_tags:
+  - Public us-east-1a
+  - Public us-east-1b
+  - Public us-east-1d
+
+private_subnets_tags:
+  - Private us-east-1a
+  - Private us-east-1b
+  - Private us-east-1d
+

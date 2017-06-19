@@ -1,0 +1,25 @@
+---
+
+- name: Create a new database
+  rds:
+    command: create
+    instance_name: "{{ db_instance_name }}"
+    db_engine: postgres
+    instance_type: "{{ db_instance_type }}"
+    username: "{{ db_master_username }}"
+    password: "{{ db_master_password }}"
+    size: 100
+    region: "{{ aws_region }}"
+    subnet: "{{ db_subnet_group_name }}"
+    publicly_accessible: "{{ db_public }}"
+    db_name: "{{ db_name }}"
+    wait: yes
+    wait_timeout: 600
+    tags:
+      Environment: testing
+      Application: cms
+  register: rds
+
+- debug:
+    msg: "The new db endpoint is {{ rds.instance.endpoint }}"
+    

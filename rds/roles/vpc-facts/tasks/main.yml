@@ -1,0 +1,42 @@
+---
+
+- name: Get my vpc
+  ec2_vpc_net_facts:
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ aws_vpc_name }}"
+  register: my_vpc
+
+- name: Get public subnets for my vpc
+  ec2_vpc_subnet_facts:
+    region: "{{ aws_region }}"
+    filters:
+      vpc-id: "{{ my_vpc.vpcs[0].id }}"
+      "tag:Name": "{{ item }}"
+  with_items: "{{ public_subnets_tags }}"
+  register: my_public_subnets
+
+- name: Set public subnet ids
+  set_fact:
+    my_public_subnet_ids: "{{ my_public_subnets.results | map(attribute='subnets.0.id') | list }}"
+
+- name: Get private subnets for my vpc
+  ec2_vpc_subnet_facts:
+    region: "{{ aws_region }}"
+    filters:
+      vpc-id: "{{ my_vpc.vpcs[0].id }}"
+      "tag:Name": "{{ item }}"
+  with_items: "{{ private_subnets_tags }}"
+  register: my_private_subnets
+
+#- name: Debug private subnet results
+#debug: var=my_private_subnets
+
+- name: Set private subnet ids
+  set_fact:
+    my_private_subnet_ids: "{{ my_private_subnets.results | map(attribute='subnets.0.id') | list }}"
+
+#- name: Debug Private subnet id results
+#debug: var=my_private_subnet_ids
+
+

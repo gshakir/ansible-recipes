@@ -1,0 +1,21 @@
+---
+
+#--vpc-security-group-ids sg-c7e5b0d2
+#
+
+- name: Create a new aurora cluster
+  command: >
+    aws rds create-db-cluster --db-cluster-identifier {{ db_cluster_name }}
+      --engine aurora 
+      --master-username {{ db_master_username }}
+      --master-user-password {{ db_master_password }}
+      --db-subnet-group-name {{ db_subnet_group_name }}
+  register: aurora_cluster
+
+- name: Create a new aurora db instance
+  command: >
+    aws rds create-db-instance --db-instance-identifier {{ db_instance_name }}
+      --db-cluster-identifier {{ db_cluster_name }}
+      --engine aurora --db-instance-class {{ db_instance_type }}
+  register: aurora_instance
+
