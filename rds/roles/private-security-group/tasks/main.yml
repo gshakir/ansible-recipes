@@ -1,0 +1,26 @@
+---
+
+- name: A private security group
+  ec2_group:
+    name: Private security group
+    description: Private security group 
+    region: "{{ aws_region }}"
+    vpc_id: "{{ my_vpc.vpcs[0].id }}"
+    rules:
+      - proto: tcp
+        from_port: 5432
+        to_port: 5432
+        group_id: "{{ public_security_group.group_id }}"
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        group_id: "{{ public_security_group.group_id }}"
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        group_id: "{{ public_security_group.group_id }}"
+  register: private_security_group
+
+
+- name: Debug private subnet results
+  debug: var=private_security_group

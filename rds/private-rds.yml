@@ -1,0 +1,20 @@
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  roles:
+    - vpc-facts
+
+    - { role: db-subnet-group,
+        my_subnet_ids: "{{ my_private_subnet_ids}}",
+        db_subnet_group_name: "{{db_private_subnet_group_name}}" 
+      }
+
+    - public-security-group
+    - private-security-group
+
+    - { role: rds,
+        db_public: false,
+        db_subnet_group_name: "{{db_private_subnet_group_name}}", 
+        vpc_security_groups: "{{ private_security_group }}"
+      }
+

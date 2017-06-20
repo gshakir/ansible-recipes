@@ -8,7 +8,7 @@
     instance_type: "{{ db_instance_type }}"
     username: "{{ db_master_username }}"
     password: "{{ db_master_password }}"
-    size: 100
+    size: 10
     region: "{{ aws_region }}"
     subnet: "{{ db_subnet_group_name }}"
     publicly_accessible: "{{ db_public }}"

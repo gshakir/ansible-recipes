@@ -22,8 +22,8 @@
         from_port: 22
         to_port: 22
         cidr_ip: "{{ ipify_public_ip }}/32"
-  register: vpc_security_groups
+  register: public_security_group
 
 
 - name: Debug private subnet results
-  debug: var=group
+  debug: var=public_security_group
