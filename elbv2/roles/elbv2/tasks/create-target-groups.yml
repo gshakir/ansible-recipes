@@ -1,17 +1,17 @@
 
 - name: Create a default target group
   command: >
-    aws elbv2 create-target-group --name my-targets --protocol HTTP --port 80 --vpc-id {{ my_vpc.vpcs[0].id }}
-  register: elb_target_group
+    aws elbv2 create-target-group --name my-default-target-group-name --protocol HTTP --port 80 --vpc-id {{ my_vpc.vpcs[0].id }}
+  register: elb_default_target_group
 
 - name: Set Default Target Group Arn
   set_fact:
-    elb_target_group_arn: "{{ (elb_target_group.stdout| from_json).TargetGroups.0.TargetGroupArn }}"
+    elb_target_group_arn: "{{ (elb_default_target_group.stdout| from_json).TargetGroups.0.TargetGroupArn }}"
 
 - name: Create target group for each rule
   command: >
     aws elbv2 create-target-group --name {{ item.target_group }} --protocol HTTP --port 80 --vpc-id {{ my_vpc.vpcs[0].id }}
-  with_items: "{{ elb_rules }}"
+  with_items: "{{ additional_elb_rules }}"
   register: additional_target_groups
 
 #- name: Debug target group results

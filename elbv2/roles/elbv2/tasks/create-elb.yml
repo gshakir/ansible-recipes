@@ -5,7 +5,7 @@
   command: >
     aws elbv2 create-load-balancer 
       --name my-load-balancer 
-      --security-groups {{ aws_group }}
+      --security-groups {{ public_security_group }}
       --subnets {{ my_public_subnet_ids | join(' ') }}
   register: elb_create
               
@@ -29,10 +29,10 @@
   command: >
     aws elbv2 create-rule --listener-arn {{ elb_listener_arn}} 
       --priority {{ item.0.priority }} 
-      --conditions Field=host-header,Values='{{ item.0.host}}' 
+      --conditions {{ item.0.rule }}
       --actions Type=forward,TargetGroupArn={{ (item.1 | from_json).TargetGroups.0.TargetGroupArn }}
   with_together: 
-    - "{{ elb_rules }}"
+    - "{{ additional_elb_rules }}"
     - "{{ additional_target_groups_arn }}"
   register: elb_listener_rule
 
