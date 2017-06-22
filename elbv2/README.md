@@ -8,7 +8,7 @@ connect the instances behind the auto scaling groups.
 The recipe works as following:
 
 * Define the application load balancer structure
-  * There is a default structure (/roles/elbv2/vars/main.yml) that can be used as an starting point. Define additional rules
+  * There is a [default structure](/roles/elbv2/vars/main.yml) that can be used as an starting point. Define additional rules
      or remove that are already defined.
 * Define target groups
   * You can define one or more target groups here. Note that a default target group is required for rules that do not match
