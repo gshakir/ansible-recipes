@@ -1,3 +1,4 @@
+#!/bin/sh
 
 # Standalone server
 #
@@ -17,4 +18,5 @@ end
 server = WEBrick::HTTPServer.new()
 server.mount "/", Echo, "{{ item.name }}"
 trap "INT" do server.shutdown end
-server.start' &
+server.start
+puts "Echo Server Started" ' &

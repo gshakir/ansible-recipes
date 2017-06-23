@@ -1,0 +1,22 @@
+---
+
+- name: Restore  a new database
+  rds:
+    command: restore
+    instance_name: "{{ db_instance_name }}"
+    db_engine: postgres
+    instance_type: "{{ db_instance_type }}"
+    region: "{{ aws_region }}"
+    subnet: "{{ db_subnet_group_name }}"
+    publicly_accessible: "{{ db_public }}"
+    snapshot: "{{ snapshot }}"
+    wait: yes
+    wait_timeout: 900
+    tags:
+      Environment: dev
+      Application: demo
+  register: rds
+
+- debug:
+    msg: "The new db endpoint is {{ rds.instance.endpoint }}"
+    

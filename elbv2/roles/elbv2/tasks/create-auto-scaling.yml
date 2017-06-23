@@ -7,7 +7,7 @@
     state: present
     region: "{{ aws_region }}"
     security_groups: [ "{{ private_security_group }}" ]
-    key_name: gshakir-staging
+    key_name: "{{ key_name }}"
     user_data:  "{{ lookup( 'template', '{{ item.user_data_file }}', convert_data=False) }}"
   register: launch_config
   with_items: "{{ launch_configs }}"

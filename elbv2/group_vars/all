@@ -5,6 +5,8 @@ aws_region: us-east-1
 private_security_group: sg-90e628e1
 public_security_group: sg-cc14d8bd
 
+key_name: gshakir-staging
+
 aws_vpc_name: "AuroraTest"
 
 

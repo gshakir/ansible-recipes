@@ -1,4 +1,4 @@
-# AWS ELBV2 via Ansible (work in progress)
+# AWS ELBV2 via Ansible
 AWS ELBV2 is an application load balancer that have several advantages over the classic load balancer. An application
 load balancer supports path and host based routing and routing requests to multiple services and so on. The application
 balancer works by creating 'target groups' for each routing rules and then connecting the target groups to either auto scaling
