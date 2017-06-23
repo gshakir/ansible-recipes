@@ -1,0 +1,29 @@
+---
+
+# Overwrite some default variables
+#
+
+elb_name: my-elbv2 
+
+
+additional_elb_rules:
+  - target_group: rule1-target-group  
+    rule: Field=path-pattern,Values='/img/*'
+    priority: 10
+
+launch_configs:
+  - name: lc1
+    user_data_file: user-data.sh
+  - name: lc2
+    user_data_file: user-data.sh
+
+auto_scaling_groups:
+  - name: asg1
+    launch_config_name: lc1
+    target_group: my-default-target-group-name
+  - name: asg2
+    launch_config_name: lc2
+    target_group: rule1-target-group
+
+
+

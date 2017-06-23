@@ -4,7 +4,7 @@
 - name: Create a load balancer
   command: >
     aws elbv2 create-load-balancer 
-      --name my-load-balancer 
+      --name {{ elb_name }}
       --security-groups {{ public_security_group }}
       --subnets {{ my_public_subnet_ids | join(' ') }}
   register: elb_create
@@ -12,6 +12,10 @@
 - name: Get load balancer arn
   set_fact:
     elb_arn: "{{ (elb_create.stdout| from_json).LoadBalancers.0.LoadBalancerArn }}"
+
+- name: Get load balancer DNS name
+  set_fact:
+    elb_dns_name: "{{ (elb_create.stdout| from_json).LoadBalancers.0.DNSName }}"
 
 - name: Create a listener
   command: >
@@ -35,6 +39,13 @@
     - "{{ additional_elb_rules }}"
     - "{{ additional_target_groups_arn }}"
   register: elb_listener_rule
+
+- name: Wait for elb to come up
+  wait_for: host={{elb_dns_name}} port=80
+
+- name: Output the dns name
+  debug: 
+    msg: "Your load balancer is ready at {{ elb_dns_name }}"
 
 
 

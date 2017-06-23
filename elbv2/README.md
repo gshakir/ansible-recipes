@@ -1,9 +1,43 @@
 # AWS ELBV2 via Ansible
 AWS ELBV2 is an application load balancer that have several advantages over the classic load balancer. An application
-load balancer supports path and host based routing and routing requests to multiple services and so on. The application
-balancer works by creating 'target groups' for each routing rules and then connecting the target groups to either auto scaling
-groups or instances directly. This recipe will connect the load balancer target groups to auto scaling groups and thereby
-connect the instances behind the auto scaling groups.
+load balancer supports path and host based routing and routing requests to multiple services and so on. 
+
+## Goal
+
+The recipe creates a single application load balancer to serve all HTTP requests
+by using:
+
+* A default target group to handle all HTTP request that does not match any
+  rules.
+* Each target group/rule is tied to its own respective Auto scaling group and launch
+  configuration
+* Then each rule is tied its own respective target group.
+
+In this [recipe blueprint](/elbv2/roles/elbv2/defaults/main.yml), all
+non-matching requests get routed to Auto scaling group 'asg1' with launch 
+configuration 'lc1'. The HTTP requests that match the path '/img/' go 
+to Auto scaling group 'asg2' with launch configuration 'lc2'. 
+And finally the HTTP request that match *host* 'blog.gulamshakir.com' 
+get routed to Auto scaling group 'asg3' with launch configuration 'lc3'
+
+To test out the recipe, it is already seeded with a ruby HTTP server that echoes
+back the request.
+
+```bash
+curl <elb url>
+```
+
+You should get the output as 'lc1: /'
+
+And calling:
+
+```bash
+curl <elb url>/img/foo
+```
+
+You should get the output as 'lc2: /img/foo'
+
+## Recipe Details
 
 The recipe works as following:
 
@@ -26,12 +60,4 @@ Before running the playbook override the 'vars' variables
 
 ```bash
 ansible-playbook elbv2.yml
-```
-
-## Run a curl command to verify
-This recipe includes a sample ruby webserver that echoes the http request, you can test the recipe by running the 
-following command:
-
-```bash
-curl <elb url>
 ```
