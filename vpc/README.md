@@ -1,6 +1,6 @@
 # Ansible VPC
 
-A recipe for creating a VPC. The play book does the following:
+A recipe for creating a VPC using the [blueprint here](/vpc/roles/vpc-and-subnets/defaults/main.yml) . The play book does the following:
 
 * Create a VPC
     * Creation of the VPC is idempotent when re-running the playbook as long as
@@ -26,7 +26,7 @@ Before running the playbook override the 'defaults' variables in 'vars' as shown
 ansible-playbook vpc.yml
 ```
 
-## Customizing the script
+## Customizing the blueprint
 
 The playbook has 2 sets of variables. The variables in the 'default' are some
 sensible defaults and starting point. You may choose to accept them or
