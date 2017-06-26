@@ -1,6 +1,6 @@
 # Ansible VPC
 
-A recipe for creating a VPC using the [blueprint here](/vpc/roles/vpc-and-subnets/defaults/main.yml) . The play book does the following:
+A recipe for creating a VPC using the [blueprint here](/vpc/roles/vpc-and-subnets/defaults/main.yml) with private and public subnets in multiple availability zones. The play book does the following:
 
 * Create a VPC
     * Creation of the VPC is idempotent when re-running the playbook as long as
