@@ -1,0 +1,13 @@
+---
+
+- name: Wait for RDS to come up
+  wait_for: host={{rds.instance.endpoint}} port=5432
+  command:
+    aws db-instance-available
+  
+- name: Seed RDS With Shakespeare data
+  shell: >
+    export PGPASSWORD={{ db_master_password}} ; curl https://raw.githubusercontent.com/catherinedevlin/opensourceshakespeare/master/shakespeare.sql | psql --host {{ rds.instance.endpoint }} --port 5432 --username={{ db_master_username}} --dbname={{ db_name }}
+
+
+

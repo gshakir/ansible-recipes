@@ -3,14 +3,19 @@
   gather_facts: no
   roles:
     - vpc-facts
+
     - { role: db-subnet-group,
         my_subnet_ids: "{{ my_public_subnet_ids}}",
         db_subnet_group_name: "{{ db_public_subnet_group_name}}" 
-       }
+      }
+
     - public-security-group
-    - { role: rds,
+
+    - { role: create-rds,
         db_public: true,
         db_subnet_group_name: "{{ db_public_subnet_group_name}}",
         vpc_security_groups: "{{ public_security_group }}"
       }
+
+    - seed-rds
 

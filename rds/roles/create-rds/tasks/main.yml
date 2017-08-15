@@ -13,8 +13,6 @@
     region: "{{ aws_region }}"
     subnet: "{{ db_subnet_group_name }}"
     publicly_accessible: "{{ db_public }}"
-    wait: yes
-    wait_timeout: 900
     vpc_security_groups: "{{ vpc_security_groups.group_id }}"
     tags:
       Environment: dev
