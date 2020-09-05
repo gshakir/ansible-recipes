@@ -6,9 +6,9 @@
     instance_type: t2.micro
     state: present
     region: "{{ aws_region }}"
-    security_groups: [ "{{ private_security_group }}" ]
+    security_groups: [ "{{ private_security_group_name }}" ]
     key_name: "{{ key_name }}"
-    user_data:  "{{ lookup( 'template', '{{ item.user_data_file }}', convert_data=False) }}"
+    user_data:  "{{ lookup( 'template', '{{ item.user_data_file }}')}}"
   register: launch_config
   with_items: "{{ launch_configs }}"
 

@@ -1,6 +1,7 @@
 ---
-- name: Install JDK 8
-  yum: name=java-1.8.0-openjdk-headless.x86_64 state=latest
+
+- name: Copy evserver
+  copy: remote_src=/home/ubuntu/src/sidecastr/sync-server/evserver  dest=/var/www/sync-server/evserver
 
 - name: Configure java to java8
   alternatives: name=java path=/usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java
